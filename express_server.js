@@ -37,6 +37,10 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.get("/u/:shortURL", (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
 
 //get request: path to target url givin url's id
 app.get("/urls/:id", (req, res) => {
@@ -48,7 +52,7 @@ app.get("/urls/:id", (req, res) => {
 app.post("/urls", (req, res) => {
   let randomShortURL = generateRandomString();
   urlDatabase[randomShortURL] = req.body.longURL;
-  res.send("Ok");
+  res.redirect(`/urls/${randomShortURL}`);
 });
 
 app.get("/urls.json", (req, res) => {
