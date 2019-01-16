@@ -122,15 +122,27 @@ app.get('/register', (req, res) => {
 
 //POST endpoint that takes in register form input
 app.post('/register', (req, res) => {
-  //id email password
-  let randomUserId = generateRandomString();
-  users[randomUserId] = {
-    id: randomUserId,
-    email: req.body.email,
-    password: req.body.password
+  //check if email or password inputs are empty
+  if(!req.body.email || !req.body.password){
+    res.status(400).send('e-mail or password empty');
+  } else {
+    //check if email is already in use by other users
+    for(var user in users){
+      if(users[user].email === req.body.email){
+        res.status(400).send('e-mail already registered');
+        return 0;
+      }
+    }
+    let randomUserId = generateRandomString();
+    users[randomUserId] = {
+      id: randomUserId,
+      email: req.body.email,
+      password: req.body.password
+    }
+    console.log(users);
+    res.cookie('user_id', randomUserId);
+    res.redirect("/urls");
   }
-  console.log(users);
-  res.redirect("/register");
 })
 
 app.listen(PORT, () => {
