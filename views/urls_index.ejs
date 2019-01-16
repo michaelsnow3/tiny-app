@@ -9,8 +9,10 @@
     <% for(let url in urls){ %>
     <li>
       <% let deleteAction = `/urls/${url}/delete` %>
+      <% let editPath = `/urls/${url}` %>
       <form method="POST" action= <%= deleteAction %> >
         <%= `Long URL: ${urls[url]} => Short URL: ${url}` %>
+        <a href= <%= editPath %> > edit</a>
         <input type="submit" value="Delete URL">
       </form>
       </li>
