@@ -15,6 +15,25 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  },
+  "user3RandomID": {
+    id: "user3RandomID",
+    email: "user3@example.com",
+    password: "asdf"
+  }
+}
+
+
 function generateRandomString() {
   let text = '';
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -25,7 +44,7 @@ function generateRandomString() {
   return text;
 }
 
-//get request: passes url database to urls-index ejs file when path = "/urls"
+//get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -34,9 +53,9 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-//get request: path to urls new page
+//get endpoint: path to urls new page
 app.get("/urls/new", (req, res) => {
-  let templateVars = { username: req.cookies["username"] }
+  let templateVars = { username: req.cookies["username"] };
   res.render("urls_new", templateVars);
 });
 
@@ -47,13 +66,13 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${randomShortURL}`);
 });
 
-//get request: redirects to newly created short url page
+//get endpoint: redirects to newly created short url page
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
-//get request: path to target url givin url's id
+//get endpoint: path to target url givin url's id
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     username: req.cookies["username"],
@@ -85,7 +104,7 @@ app.post('/urls/:id/update', (req, res) => {
 
 //POST endpoint dealing with user login
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username, {});
+  res.cookie('username', req.body.username);
   res.redirect('/urls');
 });
 
@@ -94,6 +113,25 @@ app.post('/logout', (req, res) => {
   res.clearCookie('username', {});
   res.redirect('/urls');
 });
+
+//GET endpoint: returns page with form containing email and password inputs
+app.get('/register', (req, res) => {
+  let templateVars = { username: req.cookies["username"] };
+  res.render('register', templateVars);
+})
+
+//POST endpoint that takes in register form input
+app.post('/register', (req, res) => {
+  //id email password
+  let randomUserId = generateRandomString();
+  users[randomUserId] = {
+    id: randomUserId,
+    email: req.body.email,
+    password: req.body.password
+  }
+  console.log(users);
+  res.redirect("/register");
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
