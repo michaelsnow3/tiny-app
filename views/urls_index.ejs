@@ -4,15 +4,19 @@
   <title>TinyApp</title>
 </head>
 <body>
-  <% include ./partials/_header.ejs %>
+  <% include ./partials/_header %>
   <ul>
     <% for(let url in urls){ %>
     <li>
+      <% let deleteAction = `/urls/${url}/delete` %>
+      <form method="POST" action= <%= deleteAction %> >
         <%= `Long URL: ${urls[url]} => Short URL: ${url}` %>
-    </li>
+        <input type="submit" value="Delete URL">
+      </form>
+      </li>
       <br>
   <% } %>
   </ul>
-  <p><a href='#'>Shorten New URL</a></p>
+  <p><a href='/urls/new'>Shorten New URL</a></p>
 </body>
 </html>
