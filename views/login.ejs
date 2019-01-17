@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tiny App Register</title>
+  <title>Tiny App Login</title>
 </head>
 <body>
   <% include ./partials/_header.ejs %>
-  <form method="POST" action="/register">
+  <form action="/login" method="POST">
     Email: <input type="email" name="email">
     Password: <input type="password" name="password">
-    <input type="submit" value="Register">
+    <input type="submit" value="login">
   </form>
 </body>
 </html>

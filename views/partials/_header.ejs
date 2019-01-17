@@ -1,15 +1,12 @@
 <head>
-  <% if(username) { %>
+  <% if(user) { %>
     <form action="/logout" method="POST">
-      <%= username %>
+      <%= user.id %>
       <input type="submit" value="logout">
     </form>
   <% } else { %>
-    <form action="/login" method="POST">
-      Enter Username:
-      <input type="text" name="username" placeholder="username" id="username">
-      <input type="submit" value="login">
-    </form>
+    <a href="/register">Register</a>
+    <a href="/login">Login</a>
   <% } %>
-  <br>
+  <hr>
 </head>

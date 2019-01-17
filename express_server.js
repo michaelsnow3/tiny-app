@@ -47,7 +47,7 @@ function generateRandomString() {
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    user: users[req.cookies.user_id],
     urls: urlDatabase
   };
   res.render("urls_index", templateVars);
@@ -55,7 +55,7 @@ app.get("/urls", (req, res) => {
 
 //get endpoint: path to urls new page
 app.get("/urls/new", (req, res) => {
-  let templateVars = { username: req.cookies["username"] };
+  let templateVars = { user: users[req.cookies.user_id] };
   res.render("urls_new", templateVars);
 });
 
@@ -75,7 +75,7 @@ app.get("/u/:shortURL", (req, res) => {
 //get endpoint: path to target url givin url's id
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
-    username: req.cookies["username"],
+    user: users[req.cookies.user_id],
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id]
   };
@@ -102,21 +102,41 @@ app.post('/urls/:id/update', (req, res) => {
   res.redirect("/urls/");
 });
 
+//GET endpoint: allows user to login
+app.get('/login', (req, res) => {
+  let templateVars = { user: users[req.cookies.user_id] };
+  res.render('login', templateVars);
+});
+
 //POST endpoint dealing with user login
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
+  let emailFound = false;
+  for(let user in users) {
+    if(req.body.email === users[user].email){
+      emailFound = true;
+      if(req.body.password === users[user].password){
+        res.cookie('user_id', users[user].id);
+        res.redirect('/');
+      }else {
+        res.status(403).send('incorrect password');
+      }
+    }
+  }
+  if(!emailFound){
+    res.status(403).send('e-mail cannot be found');
+  }
   res.redirect('/urls');
 });
 
 //POST endpoint dealing with user login
 app.post('/logout', (req, res) => {
-  res.clearCookie('username', {});
+  res.clearCookie('user_id', {});
   res.redirect('/urls');
 });
 
 //GET endpoint: returns page with form containing email and password inputs
 app.get('/register', (req, res) => {
-  let templateVars = { username: req.cookies["username"] };
+  let templateVars = { user: users[req.cookies.user_id] };
   res.render('register', templateVars);
 })
 
