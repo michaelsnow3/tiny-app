@@ -36,7 +36,7 @@ const users = {
   }
 }
 
-
+//random string generate function used for ID generation
 function generateRandomString() {
   let text = '';
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -47,6 +47,7 @@ function generateRandomString() {
   return text;
 }
 
+//function used for filtering user's urls into object, returns filtered object
 function urlsForUser(id) {
   let filteredUrls = {};
   for(let url in urlDatabase) {
@@ -56,6 +57,17 @@ function urlsForUser(id) {
   }
   return filteredUrls;
 }
+
+//Get endpoint for root path
+app.get("/", (req, res) => {
+  if(req.session.user_id) {
+    //if user is signed in go to urls page
+    res.redirect("/urls");
+  } else {
+    //if user is not signed in go to login page
+    res.redirect("/login");
+  }
+});
 
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
@@ -106,11 +118,6 @@ app.get("/urls/:id", (req, res) => {
     templateVars.longURL = null;
   }
   res.render("urls_show", templateVars);
-});
-
-app.get("/", (req, res) => {
-  let templateVars = { user: users[req.session.user_id] };
-  res.render('home', templateVars);
 });
 
 app.get("/urls.json", (req, res) => {
