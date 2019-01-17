@@ -5,13 +5,17 @@
 </head>
 <body>
   <% include ./partials/_header.ejs %>
-  <h1>
-    Short URL: <%= shortURL %>
-  </h1>
-  <% let updateAction = `/urls/${shortURL}/update` %>
-  <form method="POST" action= <%= updateAction %> >
-    <input id="longURL" type="text" name="longURL" value= <%= longURL %> style="width: 300px">
-    <input type="submit" value="Update">
-  </form>
+  <% if(longURL) { %>
+    <h1>
+      Short URL: <%= shortURL %>
+    </h1>
+    <% let updateAction = `/urls/${shortURL}/update` %>
+    <form method="POST" action= <%= updateAction %> >
+      <input id="longURL" type="text" name="longURL" value= <%= longURL %> style="width: 300px">
+      <input type="submit" value="Update">
+    </form>
+  <% } else {%>
+    <h2>URL Not Found</h2>
+  <% } %>
 </body>
 </html>

@@ -98,11 +98,16 @@ app.get("/u/:shortURL", (req, res) => {
 
 //get endpoint: path to target url givin url's id
 app.get("/urls/:id", (req, res) => {
+  let userUrls = urlsForUser(req.cookies.user_id);
   let templateVars = {
     user: users[req.cookies.user_id],
-    shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id].longURL
+    shortURL: req.params.id
   };
+  if(userUrls[req.params.id]) {
+    templateVars.longURL = userUrls[req.params.id].longURL;
+  } else {
+    templateVars.longURL = null;
+  }
   res.render("urls_show", templateVars);
 });
 
