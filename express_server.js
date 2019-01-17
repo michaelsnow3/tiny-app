@@ -118,14 +118,13 @@ app.post('/login', (req, res) => {
         res.cookie('user_id', users[user].id);
         res.redirect('/');
       }else {
-        res.status(403).send('incorrect password');
+        res.status(403).send('incorrect e-mail or password');
       }
     }
   }
   if(!emailFound){
-    res.status(403).send('e-mail cannot be found');
+    res.status(403).send('incorrect e-mail or password');
   }
-  res.redirect('/urls');
 });
 
 //POST endpoint dealing with user login
@@ -159,7 +158,7 @@ app.post('/register', (req, res) => {
       email: req.body.email,
       password: req.body.password
     }
-    console.log(users);
+    // console.log(users);
     res.cookie('user_id', randomUserId);
     res.redirect("/urls");
   }

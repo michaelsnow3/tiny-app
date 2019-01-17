@@ -2,13 +2,17 @@
 <html>
 <head>
   <title>Tiny App Register</title>
+  <link rel="stylesheet" type="text/css" href="../form_align.css">
 </head>
 <body>
   <% include ./partials/_header.ejs %>
-  <form method="POST" action="/register">
-    Email: <input type="email" name="email">
-    Password: <input type="password" name="password">
-    <input type="submit" value="Register">
-  </form>
+  <div class="container">
+    <h1>Register</h1>
+    <form method="POST" action="/register">
+      Email: <input type="email" name="email">
+      Password: <input type="password" name="password">
+      <input type="submit" value="Register">
+    </form>
+  </div>
 </body>
 </html>

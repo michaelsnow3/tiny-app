@@ -5,10 +5,13 @@
 </head>
 <body>
   <% include ./partials/_header.ejs %>
-  <form action="/login" method="POST">
-    Email: <input type="email" name="email">
-    Password: <input type="password" name="password">
-    <input type="submit" value="login">
-  </form>
+  <div class="container">
+    <form action="/login" method="POST">
+      <h1>Login</h1>
+      Email: <input type="email" name="email">
+      Password: <input type="password" name="password">
+      <input type="submit" value="login">
+    </form>
+  </div>
 </body>
 </html>
