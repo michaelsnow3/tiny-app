@@ -3,6 +3,7 @@ var app = express();
 var PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 var cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -22,20 +23,10 @@ var urlDatabase = {
 };
 
 const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
- "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  },
   "mike": {
     id: "mike",
     email: "mike@gmail.com",
-    password: "asdf"
+    password: bcrypt.hashSync("asdf", 10)
   }
 }
 
@@ -147,7 +138,7 @@ app.post('/login', (req, res) => {
   for(let user in users) {
     if(req.body.email === users[user].email){
       emailFound = true;
-      if(req.body.password === users[user].password){
+      if(bcrypt.compareSync(req.body.password, hashedPassword) {
         res.cookie('user_id', users[user].id);
         res.redirect('/');
       }else {
@@ -186,10 +177,12 @@ app.post('/register', (req, res) => {
       }
     }
     let randomUserId = generateRandomString();
+    //hash password entered by user
+    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     users[randomUserId] = {
       id: randomUserId,
       email: req.body.email,
-      password: req.body.password
+      password: hashedPassword
     }
     // console.log(users);
     res.cookie('user_id', randomUserId);
