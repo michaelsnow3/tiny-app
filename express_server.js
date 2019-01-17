@@ -50,11 +50,22 @@ function generateRandomString() {
   return text;
 }
 
+function urlsForUser(id) {
+  let filteredUrls = {};
+  for(let url in urlDatabase) {
+    if(id === urlDatabase[url].userID){
+      filteredUrls[url] = urlDatabase[url];
+    }
+  }
+  return filteredUrls;
+}
+
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
+  let usersUrls = urlsForUser(req.cookies.user_id);
   let templateVars = {
     user: users[req.cookies.user_id],
-    urls: urlDatabase
+    urls: usersUrls
   };
   res.render("urls_index", templateVars);
 });
@@ -96,7 +107,7 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.send("<a href='/urls'>urls</a>");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -105,13 +116,17 @@ app.get("/urls.json", (req, res) => {
 
 //delete URL from url database and redirect to urls_index
 app.post('/urls/:id/delete', (req, res) => {
-  delete urlDatabase[req.params.id];
+  if(urlDatabase[req.params.id].userID === req.cookies.user_id){
+    delete urlDatabase[req.params.id];
+  }
   res.redirect('/urls');
 });
 
 //update long URL from /urls/:id page
 app.post('/urls/:id/update', (req, res) => {
-  urlDatabase[req.params.id] = { longURL: req.body.longURL };
+  if(urlDatabase[req.params.id].userID === req.cookies.user_id){
+    urlDatabase[req.params.id].longURL = req.body.longURL;
+  }
   res.redirect("/urls/");
 });
 
