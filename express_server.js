@@ -138,7 +138,7 @@ app.post('/login', (req, res) => {
   for(let user in users) {
     if(req.body.email === users[user].email){
       emailFound = true;
-      if(bcrypt.compareSync(req.body.password, hashedPassword) {
+      if(bcrypt.compareSync(req.body.password, users[user].password)) {
         res.cookie('user_id', users[user].id);
         res.redirect('/');
       }else {
