@@ -109,7 +109,8 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("<a href='/urls'>urls</a>");
+  let templateVars = { user: users[req.session.user_id] };
+  res.render('home', templateVars);
 });
 
 app.get("/urls.json", (req, res) => {

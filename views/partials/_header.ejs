@@ -1,7 +1,7 @@
 <head>
   <% if(user) { %>
     <form action="/logout" method="POST">
-      <%= user.id %>
+      <%= user.email %>
       <input type="submit" value="logout">
     </form>
   <% } else { %>
