@@ -94,6 +94,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id],
     shortURL: req.params.id,
+    count: urlDatabase[req.params.id].timesVisited,
     exists: exists
   };
   if(userUrls[req.params.id]) {
@@ -108,11 +109,14 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   let longURL = urlDatabase[req.params.id].longURL;
 
-    if (validUrl.isUri(longURL)){
-      res.redirect(longURL);
-    } else {
-      res.send("URL does not exist")
-    }
+  if (validUrl.isUri(longURL)){
+    //valid url: redirect to url and add one to times url has been visited
+    urlDatabase[req.params.id].timesVisited += 1;
+    res.redirect(longURL);
+  } else {
+    //not valid url
+    res.send("URL does not exist")
+  }
 });
 
 //GET endpoint: allows user to login
@@ -155,7 +159,8 @@ app.put("/urls", (req, res) => {
   let randomShortURL = generateRandomString();
   urlDatabase[randomShortURL] = {
     longURL: req.body.longURL,
-    userID: req.session.user_id
+    userID: req.session.user_id,
+    timesVisited: 0
   };
   res.redirect(`/urls/${randomShortURL}`);
 });
