@@ -18,7 +18,10 @@
       </li>
       <br>
   <% } %>
+  <% if(!user) { %>
+    <h2 style="text-align: center;">Login to view your short URLs</h2>
+  <% } %>
   </ul>
-  <p><a href='/urls/new'>Shorten New URL</a></p>
+  <p style="text-align: center;"><a href='/urls/new'>Shorten New URL</a></p>
 </body>
 </html>

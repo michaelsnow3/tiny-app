@@ -14,8 +14,12 @@
       <input id="longURL" type="text" name="longURL" value= <%= longURL %> style="width: 300px">
       <input type="submit" value="Update">
     </form>
-  <% } else {%>
-    <h2>URL Not Found</h2>
+  <% } else if(!exists) {%>
+    <h2>URL for givin ID does not exist </h2>
+  <% } else if(!user) {%>
+    <h2>Login to view your URL</h2>
+  <% } else { %>
+    <h2>You do not own the URL with givin ID</h2>
   <% } %>
 </body>
 </html>
