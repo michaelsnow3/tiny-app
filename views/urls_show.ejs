@@ -14,7 +14,8 @@
       <input id="longURL" type="text" name="longURL" value= <%= longURL %> style="width: 300px">
       <input type="submit" value="Update">
     </form>
-    <p> Total times this URL has been visited: <%= " " + count %> </p>
+    <p> Total times this URL has been visited: <%= " " + totalCount %> </p>
+    <p> Times this URL has been visited by unique users: <%= " " + uniqueVisters %> </p>
   <% } else if(!exists) {%>
     <h2>URL for givin ID does not exist </h2>
   <% } else if(!user) {%>

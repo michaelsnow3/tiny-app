@@ -23,12 +23,14 @@ let urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
     userID: "mike",
-    timesVisited: 0
+    timesVisited: 0,
+    uniqueVisiters: 0
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
     userID: "mike",
-    timesVisited: 0
+    timesVisited: 0,
+    uniqueVisiters: 0
   }
 };
 
@@ -94,7 +96,8 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id],
     shortURL: req.params.id,
-    count: urlDatabase[req.params.id].timesVisited,
+    totalCount: urlDatabase[req.params.id].timesVisited,
+    uniqueVisters: urlDatabase[req.params.id].uniqueVisiters,
     exists: exists
   };
   if(userUrls[req.params.id]) {
@@ -112,10 +115,15 @@ app.get("/u/:id", (req, res) => {
   if (validUrl.isUri(longURL)){
     //valid url: redirect to url and add one to times url has been visited
     urlDatabase[req.params.id].timesVisited += 1;
+    //check if user is unique
+    if(!req.session[req.params.id]){
+      req.session[req.params.id] = true;
+      urlDatabase[req.params.id].uniqueVisiters ++;
+    }
     res.redirect(longURL);
   } else {
     //not valid url
-    res.send("URL does not exist")
+    res.send("URL does not exist");
   }
 });
 
@@ -160,7 +168,8 @@ app.put("/urls", (req, res) => {
   urlDatabase[randomShortURL] = {
     longURL: req.body.longURL,
     userID: req.session.user_id,
-    timesVisited: 0
+    timesVisited: 0,
+    uniqueVisiters: 0
   };
   res.redirect(`/urls/${randomShortURL}`);
 });
