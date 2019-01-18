@@ -1,10 +1,10 @@
 require('dotenv').config();
 
-var express = require("express");
-var app = express();
-var PORT = 8080; // default port 8080
+const express = require("express");
+const app = express();
+const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 
@@ -16,8 +16,7 @@ app.use(cookieSession({
 
 app.set("view engine", "ejs");
 
-
-var urlDatabase = {
+let urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
     userID: "mike"
@@ -34,7 +33,7 @@ const users = {
     email: "mike@gmail.com",
     password: bcrypt.hashSync("asdf", 10)
   }
-}
+};
 
 //random string generate function used for ID generation
 function generateRandomString() {
@@ -58,16 +57,6 @@ function urlsForUser(id) {
   return filteredUrls;
 }
 
-//Get endpoint for root path
-app.get("/", (req, res) => {
-  if(req.session.user_id) {
-    //if user is signed in go to urls page
-    res.redirect("/urls");
-  } else {
-    //if user is not signed in go to login page
-    res.redirect("/login");
-  }
-});
 
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
@@ -123,7 +112,7 @@ app.get('/login', (req, res) => {
     //logged in
     res.redirect("/urls");
   } else {
-    //not logged in
+    // not logged in
     res.render('login', templateVars);
   }
 });
@@ -137,6 +126,17 @@ app.get('/register', (req, res) => {
   } else {
     //not logged in
     res.render('register', templateVars);
+  }
+});
+
+//Get endpoint for root path
+app.get("/", (req, res) => {
+  if(req.session.user_id) {
+    //if user is signed in go to urls page
+    res.redirect("/urls");
+  } else {
+    //if user is not signed in go to login page
+    res.redirect("/login");
   }
 });
 
@@ -199,7 +199,10 @@ app.post('/login', (req, res) => {
 
 //POST endpoint dealing with user login
 app.post('/logout', (req, res) => {
-  req.session = null;
+  res.session = null;
+  res.clearCookie("session");
+  res.clearCookie("session.sig");
+
   res.redirect('/urls');
 });
 
@@ -210,7 +213,7 @@ app.post('/register', (req, res) => {
     res.status(400).send('e-mail or password empty');
   } else {
     //check if email is already in use by other users
-    for(var user in users){
+    for(let user in users){
       if(users[user].email === req.body.email){
         res.status(400).send('e-mail already registered');
         return 0;
@@ -224,7 +227,6 @@ app.post('/register', (req, res) => {
       email: req.body.email,
       password: hashedPassword
     }
-    // console.log(users);
     req.session.user_id = (randomUserId);
     res.redirect("/urls");
   }
