@@ -5,17 +5,31 @@
 </head>
 <body>
   <% include ./partials/_header.ejs %>
+
   <% if(longURL) { %>
+
     <h1>
       Short URL: <%= shortURL %>
     </h1>
+
     <% let updateAction = `/urls/${shortURL}/update?_method=PUT` %>
     <form method="POST" action= <%= updateAction %> >
       <input id="longURL" type="text" name="longURL" value= <%= longURL %> style="width: 300px">
       <input type="submit" value="Update">
     </form>
-    <p> Total times this URL has been visited: <%= " " + totalCount %> </p>
-    <p> Times this URL has been visited by unique users: <%= " " + uniqueVisters %> </p>
+    <p> Total times this URL has been visited: <%= " " + urlDatabase.timesVisited %> </p>
+    <p>
+      Times this URL has been visited by unique users:
+      <%= " " + urlDatabase.uniqueVisiters %>
+    </p>
+    <h3>Visits:</h3>
+    <ul>
+      <% urlDatabase.userTimestamp.forEach ((visit) => { %>
+        <li>Visited by
+          <%= visit.user + " " %> at <%= " " + visit.timestamp %>
+        </li>
+      <% }); %>
+    </ul>
   <% } else if(!exists) {%>
     <h2>URL for givin ID does not exist </h2>
   <% } else if(!user) {%>

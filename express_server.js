@@ -24,13 +24,15 @@ let urlDatabase = {
     longURL: "http://www.lighthouselabs.ca",
     userID: "mike",
     timesVisited: 0,
-    uniqueVisiters: 0
+    uniqueVisiters: 0,
+    userTimestamp: []
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
     userID: "mike",
     timesVisited: 0,
-    uniqueVisiters: 0
+    uniqueVisiters: 0,
+    userTimestamp: []
   }
 };
 
@@ -96,8 +98,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id],
     shortURL: req.params.id,
-    totalCount: urlDatabase[req.params.id].timesVisited,
-    uniqueVisters: urlDatabase[req.params.id].uniqueVisiters,
+    urlDatabase: urlDatabase[req.params.id],
     exists: exists
   };
   if(userUrls[req.params.id]) {
@@ -120,6 +121,12 @@ app.get("/u/:id", (req, res) => {
       req.session[req.params.id] = true;
       urlDatabase[req.params.id].uniqueVisiters ++;
     }
+    //list user and timestamp
+    urlDatabase[req.params.id].userTimestamp.push({
+      timestamp: new Date(),
+      user: req.session.user_id
+    });
+
     res.redirect(longURL);
   } else {
     //not valid url
@@ -169,7 +176,8 @@ app.put("/urls", (req, res) => {
     longURL: req.body.longURL,
     userID: req.session.user_id,
     timesVisited: 0,
-    uniqueVisiters: 0
+    uniqueVisiters: 0,
+    userTimestamp: []
   };
   res.redirect(`/urls/${randomShortURL}`);
 });
