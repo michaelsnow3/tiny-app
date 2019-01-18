@@ -1,6 +1,6 @@
 <head>
   <% if(user) { %>
-    <form action="/logout" method="POST">
+    <form action="/logout?_method=DELETE" method="POST">
       <%= user.email %>
       <input type="submit" value="logout">
     </form>

@@ -1,13 +1,16 @@
 require('dotenv').config();
 
 const express = require("express");
+var methodOverride = require('method-override');
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
+const validUrl = require('valid-url');
 
+app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
@@ -19,11 +22,13 @@ app.set("view engine", "ejs");
 let urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
-    userID: "mike"
+    userID: "mike",
+    timesVisited: 0
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
-    userID: "mike"
+    userID: "mike",
+    timesVisited: 0
   }
 };
 
@@ -102,7 +107,12 @@ app.get("/urls/:id", (req, res) => {
 //get endpoint: redirects to newly created short url page
 app.get("/u/:id", (req, res) => {
   let longURL = urlDatabase[req.params.id].longURL;
-  res.redirect(longURL);
+
+    if (validUrl.isUri(longURL)){
+      res.redirect(longURL);
+    } else {
+      res.send("URL does not exist")
+    }
 });
 
 //GET endpoint: allows user to login
@@ -141,7 +151,7 @@ app.get("/", (req, res) => {
 });
 
 //posts form input from urls new page
-app.post("/urls", (req, res) => {
+app.put("/urls", (req, res) => {
   let randomShortURL = generateRandomString();
   urlDatabase[randomShortURL] = {
     longURL: req.body.longURL,
@@ -150,8 +160,8 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${randomShortURL}`);
 });
 
-//update long URL from /urls/:id page
-app.post('/urls/:id/update', (req, res) => {
+//PUT endpoint: update long URL from /urls/:id page
+app.put('/urls/:id/update', (req, res) => {
   if(urlDatabase[req.params.id].userID === req.session.user_id){
     urlDatabase[req.params.id].longURL = req.body.longURL;
     res.redirect("/urls/");
@@ -162,8 +172,8 @@ app.post('/urls/:id/update', (req, res) => {
   }
 });
 
-//delete URL from url database and redirect to urls_index
-app.post('/urls/:id/delete', (req, res) => {
+//DELETE endpoint: delete URL from url database and redirect to urls_index
+app.delete('/urls/:id/delete', (req, res) => {
   if(req.session.user_id){
     if(urlDatabase[req.params.id].userID === req.session.user_id){
       delete urlDatabase[req.params.id];
@@ -197,17 +207,14 @@ app.post('/login', (req, res) => {
   }
 });
 
-//POST endpoint dealing with user login
-app.post('/logout', (req, res) => {
-  res.session = null;
-  res.clearCookie("session");
-  res.clearCookie("session.sig");
-
+//DELETE endpoint dealing with user login
+app.delete('/logout', (req, res) => {
+  delete req.session["user_id"];
   res.redirect('/urls');
 });
 
-//POST endpoint that takes in register form input
-app.post('/register', (req, res) => {
+// PUT endpoint that takes in register form input
+app.put('/register', (req, res) => {
   //check if email or password inputs are empty
   if(!req.body.email || !req.body.password){
     res.status(400).send('e-mail or password empty');
@@ -230,7 +237,7 @@ app.post('/register', (req, res) => {
     req.session.user_id = (randomUserId);
     res.redirect("/urls");
   }
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

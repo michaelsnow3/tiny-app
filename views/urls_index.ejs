@@ -8,7 +8,7 @@
   <ul>
     <% for(let url in urls){ %>
       <li>
-        <% let deleteAction = `/urls/${url}/delete` %>
+        <% let deleteAction = `/urls/${url}/delete?_method=DELETE` %>
         <% let editPath = `/urls/${url}` %>
         <form method="POST" action= <%= deleteAction %> >
           <%= `Long URL: ${urls[url].longURL} => Short URL: ${url}` %>

@@ -9,7 +9,7 @@
     <h1>
       Short URL: <%= shortURL %>
     </h1>
-    <% let updateAction = `/urls/${shortURL}/update` %>
+    <% let updateAction = `/urls/${shortURL}/update?_method=PUT` %>
     <form method="POST" action= <%= updateAction %> >
       <input id="longURL" type="text" name="longURL" value= <%= longURL %> style="width: 300px">
       <input type="submit" value="Update">
