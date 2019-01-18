@@ -112,6 +112,12 @@ app.get("/urls/:id", (req, res) => {
 
 //get endpoint: redirects to newly created short url page
 app.get("/u/:id", (req, res) => {
+  //check if short url exists in database
+  if(!urlDatabase[req.params.id]){
+    res.status(404).send("Url not found");
+    return 0;
+  }
+
   let longURL = urlDatabase[req.params.id].longURL;
 
   if (validUrl.isUri(longURL)){
