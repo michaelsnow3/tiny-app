@@ -17,6 +17,7 @@ app.use(cookieSession({
   secret: process.env.SESSION_SECRET
 }));
 
+
 app.set("view engine", "ejs");
 
 let urlDatabase = {
@@ -130,7 +131,7 @@ app.get("/u/:id", (req, res) => {
     res.redirect(longURL);
   } else {
     //not valid url
-    res.send("URL does not exist");
+    res.status(404).send("URL does not exist");
   }
 });
 
@@ -188,9 +189,9 @@ app.put('/urls/:id/update', (req, res) => {
     urlDatabase[req.params.id].longURL = req.body.longURL;
     res.redirect("/urls/");
   } else if(urlDatabase[req.params.id]){
-    res.send("Cannot update other users url ids");
+    res.status(404).send("Cannot update other users url ids");
   } else {
-    res.send("Url not found");
+    res.status(404).send("Url not found");
   }
 });
 
@@ -201,12 +202,12 @@ app.delete('/urls/:id/delete', (req, res) => {
       delete urlDatabase[req.params.id];
       res.redirect('/urls');
     } else if(urlDatabase[req.params.id]){
-      res.send("Cannot delete other users url ids");
+      res.status(404).send("Cannot delete other users url ids");
     } else {
-      res.send("Url not found");
+      res.status(404).send("Url not found");
     }
   } else {
-    res.send("Login to delete your URLs");
+    res.status(404).send("Login to delete your URLs");
   }
 });
 
