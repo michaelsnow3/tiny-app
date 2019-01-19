@@ -189,8 +189,15 @@ app.get("/", (req, res) => {
 //posts form input from urls new page
 app.put("/urls", (req, res) => {
   let randomShortURL = generateRandomString();
+  let longUrlInput = req.body.longURL;
+
+  //if long url does not start with "http://" add it
+  if(!longUrlInput.startsWith("https://")){
+    longUrlInput = `https://${longUrlInput}`;
+  }
+
   urlDatabase[randomShortURL] = {
-    longURL: req.body.longURL,
+    longURL: longUrlInput,
     userID: req.session.user_id,
     timesVisited: 0,
     uniqueVisiters: 0,
