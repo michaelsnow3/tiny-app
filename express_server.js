@@ -48,7 +48,7 @@ function generateRandomString() {
   let text = '';
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (let i = 0; i < 6; i++) {
+  for (let randomLetterInc = 0; randomLetter < 6; randomLetter++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
