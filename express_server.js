@@ -85,6 +85,18 @@ function urlsForUser(id) {
     }
   }
 
+  //function that returns user id if login is valid or false is login is not valid
+  function validLogin(email, password) {
+    for(let user in users) {
+      if(email === users[user].email){
+        if(bcrypt.compareSync(password, users[user].password)) {
+          return users[user].id;
+        }
+      }
+    }
+    return false;
+  }
+
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
   let usersUrls = urlsForUser(req.session.user_id);
@@ -257,19 +269,10 @@ app.delete('/urls/:id/delete', (req, res) => {
 
 //POST endpoint dealing with user login
 app.post('/login', (req, res) => {
-  let emailFound = false;
-  for(let user in users) {
-    if(req.body.email === users[user].email){
-      emailFound = true;
-      if(bcrypt.compareSync(req.body.password, users[user].password)) {
-        req.session.user_id = (users[user].id);
-        res.redirect('/');
-      }else {
-        res.status(403).send('incorrect e-mail or password');
-      }
-    }
-  }
-  if(!emailFound){
+  if(validLogin(req.body.email, req.body.password)) {
+    req.session.user_id = validLogin(req.body.email, req.body.password);
+    res.redirect('/');
+  } else {
     res.status(403).send('incorrect e-mail or password');
   }
 });
