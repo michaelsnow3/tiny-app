@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const express = require("express");
 var methodOverride = require('method-override');
 const app = express();
@@ -14,7 +12,7 @@ app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
-  secret: process.env.SESSION_SECRET
+  secret: "super_secret"
 }));
 
 
