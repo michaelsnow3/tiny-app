@@ -65,6 +65,13 @@ function urlsForUser(id) {
   return filteredUrls;
 }
 
+//if long url does not start with "http://" add it
+  function checkURL(url){
+    if(!url.startsWith("https://")){
+      url = `https://${url}`;
+    }
+    return url;
+  }
 
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
@@ -190,10 +197,7 @@ app.put("/urls", (req, res) => {
   let randomShortURL = generateRandomString();
   let longUrlInput = req.body.longURL;
 
-  //if long url does not start with "http://" add it
-  if(!longUrlInput.startsWith("https://")){
-    longUrlInput = `https://${longUrlInput}`;
-  }
+  longUrlInput = checkURL(longUrlInput);
 
   urlDatabase[randomShortURL] = {
     longURL: longUrlInput,
@@ -207,10 +211,15 @@ app.put("/urls", (req, res) => {
 
 //PUT endpoint: update long URL from /urls/:id page
 app.put('/urls/:id/update', (req, res) => {
-  if(urlDatabase[req.params.id].userID === req.session.user_id){
-    urlDatabase[req.params.id].longURL = req.body.longURL;
+  let shortURL = req.params.id;
+  let longUrlUpdate = req.body.longURL;
+
+  longUrlUpdate = checkURL(longUrlUpdate);
+
+  if(urlDatabase[shortURL].userID === req.session.user_id){
+    urlDatabase[shortURL].longURL = longUrlUpdate;
     res.redirect("/urls/");
-  } else if(urlDatabase[req.params.id]){
+  } else if(urlDatabase[shortURL]){
     res.status(404).send("Cannot update other users url ids");
   } else {
     res.status(404).send("Url not found");
