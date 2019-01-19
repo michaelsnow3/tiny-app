@@ -90,6 +90,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let userUrls = urlsForUser(req.session.user_id);
   let exists = false;
+
   //checks if url exists
   if(urlDatabase[req.params.id]){
     exists = true;
@@ -110,6 +111,7 @@ app.get("/urls/:id", (req, res) => {
 
 //get endpoint: redirects to newly created short url page
 app.get("/u/:id", (req, res) => {
+
   //check if short url exists in database
   if(!urlDatabase[req.params.id]){
     res.status(404).send("Url not found");
@@ -119,13 +121,16 @@ app.get("/u/:id", (req, res) => {
   let longURL = urlDatabase[req.params.id].longURL;
 
   if (validUrl.isUri(longURL)){
+
     //valid url: redirect to url and add one to times url has been visited
     urlDatabase[req.params.id].timesVisited += 1;
+
     //check if user is unique
     if(!req.session[req.params.id]){
       req.session[req.params.id] = true;
       urlDatabase[req.params.id].uniqueVisiters ++;
     }
+
     //list user and timestamp
     urlDatabase[req.params.id].userTimestamp.push({
       timestamp: new Date(),
@@ -134,6 +139,7 @@ app.get("/u/:id", (req, res) => {
 
     res.redirect(longURL);
   } else {
+
     //not valid url
     res.status(404).send("URL does not exist");
   }
@@ -143,9 +149,11 @@ app.get("/u/:id", (req, res) => {
 app.get('/login', (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
   if(req.session.user_id){
+
     //logged in
     res.redirect("/urls");
   } else {
+
     // not logged in
     res.render('login', templateVars);
   }
@@ -155,9 +163,11 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
   let templateVars = { user: users[req.session.user_id] };
   if(req.session.user_id){
+
     //logged in
     res.redirect("/urls");
   } else {
+
     //not logged in
     res.render('register', templateVars);
   }
@@ -166,9 +176,11 @@ app.get('/register', (req, res) => {
 //Get endpoint for root path
 app.get("/", (req, res) => {
   if(req.session.user_id) {
+
     //if user is signed in go to urls page
     res.redirect("/urls");
   } else {
+
     //if user is not signed in go to login page
     res.redirect("/login");
   }
@@ -242,10 +254,12 @@ app.delete('/logout', (req, res) => {
 
 // PUT endpoint that takes in register form input
 app.put('/register', (req, res) => {
+
   //check if email or password inputs are empty
   if(!req.body.email || !req.body.password){
     res.status(400).send('e-mail or password empty');
   } else {
+
     //check if email is already in use by other users
     for(let user in users){
       if(users[user].email === req.body.email){
@@ -254,6 +268,7 @@ app.put('/register', (req, res) => {
       }
     }
     let randomUserId = generateRandomString();
+
     //hash password entered by user
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     users[randomUserId] = {
