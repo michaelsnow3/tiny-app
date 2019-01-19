@@ -46,9 +46,9 @@ const users = {
 //random string generate function used for ID generation
 function generateRandomString() {
   let text = '';
-  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (let randomLetterInc = 0; randomLetter < 6; randomLetter++) {
+  for (let randomLetterInc = 0; randomLetterInc < 6; randomLetterInc++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
@@ -69,7 +69,7 @@ function urlsForUser(id) {
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
   let usersUrls = urlsForUser(req.session.user_id);
-  let templateVars = {
+  const templateVars = {
     user: users[req.session.user_id],
     urls: usersUrls
   };
@@ -78,7 +78,7 @@ app.get("/urls", (req, res) => {
 
 //get endpoint: path to urls new page
 app.get("/urls/new", (req, res) => {
-  let templateVars = { user: users[req.session.user_id] };
+  const templateVars = { user: users[req.session.user_id] };
   if(req.session.user_id){
     res.render("urls_new", templateVars);
   } else {
@@ -95,7 +95,7 @@ app.get("/urls/:id", (req, res) => {
   if(urlDatabase[req.params.id]){
     exists = true;
   }
-  let templateVars = {
+  const templateVars = {
     user: users[req.session.user_id],
     shortURL: req.params.id,
     urlDatabase: urlDatabase[req.params.id],
@@ -115,7 +115,6 @@ app.get("/u/:id", (req, res) => {
   //check if short url exists in database
   if(!urlDatabase[req.params.id]){
     res.status(404).send("Url not found");
-    return 0;
   }
 
   let longURL = urlDatabase[req.params.id].longURL;
@@ -147,7 +146,7 @@ app.get("/u/:id", (req, res) => {
 
 //GET endpoint: allows user to login
 app.get('/login', (req, res) => {
-  let templateVars = { user: users[req.session.user_id] };
+  const templateVars = { user: users[req.session.user_id] };
   if(req.session.user_id){
 
     //logged in
@@ -161,7 +160,7 @@ app.get('/login', (req, res) => {
 
 //GET endpoint: returns page with form containing email and password inputs
 app.get('/register', (req, res) => {
-  let templateVars = { user: users[req.session.user_id] };
+  const templateVars = { user: users[req.session.user_id] };
   if(req.session.user_id){
 
     //logged in
