@@ -73,6 +73,18 @@ function urlsForUser(id) {
     return url;
   }
 
+  //adds a new user object to user database
+  function createNewUser(email, password, userID) {
+
+    //hash password entered by user
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    users[userID] = {
+      id: userID,
+      email: email,
+      password: hashedPassword
+    }
+  }
+
 //get endpoint: passes url database to urls-index ejs file when path = "/urls"
 app.get("/urls", (req, res) => {
   let usersUrls = urlsForUser(req.session.user_id);
@@ -213,10 +225,11 @@ app.put("/urls", (req, res) => {
 app.put('/urls/:id/update', (req, res) => {
   let shortURL = req.params.id;
   let longUrlUpdate = req.body.longURL;
+  const userCanModify = urlDatabase[shortURL].userID === req.session.user_id;
 
   longUrlUpdate = checkURL(longUrlUpdate);
 
-  if(urlDatabase[shortURL].userID === req.session.user_id){
+  if(userCanModify){
     urlDatabase[shortURL].longURL = longUrlUpdate;
     res.redirect("/urls/");
   } else if(urlDatabase[shortURL]){
@@ -283,15 +296,9 @@ app.put('/register', (req, res) => {
       }
     }
     let randomUserId = generateRandomString();
-
-    //hash password entered by user
-    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-    users[randomUserId] = {
-      id: randomUserId,
-      email: req.body.email,
-      password: hashedPassword
-    }
+    createNewUser(req.body.email, req.body.password, randomUserId);
     req.session.user_id = (randomUserId);
+
     res.redirect("/urls");
   }
 });
